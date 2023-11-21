@@ -1,0 +1,13 @@
+[package]
+name = "wry-test"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.75"
+axum = { version = "0.6.20", features = ["ws", "tokio"] }
+tao = "0.23.0"
+tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread"] }
+wry = "0.34.2"

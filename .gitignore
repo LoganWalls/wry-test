@@ -1,0 +1,4 @@
+.envrc
+.DS_STORE
+/.direnv
+/target
