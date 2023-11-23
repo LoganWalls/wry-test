@@ -31,12 +31,8 @@
         toolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
         craneLib = (crane.mkLib pkgs).overrideToolchain toolchain;
         buildDeps =
-          lib.optionals stdenv.isLinux (with pkgs; [
-            pkg-config
-            webkitgtk
-          ])
+          lib.optionals stdenv.isLinux (with pkgs; [webkitgtk_4_1])
           ++ lib.optionals stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
-            # Security
             WebKit
             pkgs.libiconv
           ]);
@@ -44,6 +40,7 @@
           src = craneLib.cleanCargoSource (craneLib.path ./.);
           strictDeps = true;
           buildInputs = buildDeps;
+          nativeBuildInputs = lib.optionals stdenv.isLinux [pkgs.pkg-config];
         };
       in {
         apps.${system}.default = let
@@ -63,9 +60,6 @@
             ]
             ++ buildDeps;
           RUST_SRC_PATH = "${toolchain}/lib/rustlib/src/rust/library";
-          # LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-          #   pkgs.stdenv.cc.cc
-          # ];
         };
       }
     );

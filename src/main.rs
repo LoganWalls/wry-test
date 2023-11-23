@@ -7,7 +7,7 @@ use tao::{
     window::WindowBuilder,
 };
 use tokio::sync::Mutex;
-use wry::webview::WebViewBuilder;
+use wry::WebViewBuilder;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -41,7 +41,7 @@ async fn main() -> Result<()> {
         target_os = "ios",
         target_os = "android"
     ))]
-    let builder = WebViewBuilder::new(window)?;
+    let builder = WebViewBuilder::new(&window);
 
     #[cfg(not(any(
         target_os = "windows",
