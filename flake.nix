@@ -51,7 +51,7 @@
           exe = crate.passthru.exePath or "/bin/${name}";
         in {
           type = "app";
-          program = crate.passthru.exePath or "/bin/${name}";
+          program = "${crate}${exe}";
         };
         packages.${system}.default = crate;
         checks.${system} = {inherit crate;};
