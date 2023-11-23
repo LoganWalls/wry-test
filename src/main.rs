@@ -1,22 +1,37 @@
 use anyhow::Result;
 use axum::{routing::get, Router};
+use mlua::Lua;
 use tao::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
     window::WindowBuilder,
 };
+use tokio::sync::Mutex;
 use wry::webview::WebViewBuilder;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    let lua = Box::leak(Box::new(Mutex::new(Lua::new())));
+    // Start the backend server
     tokio::spawn(async {
         // build our application with a single route
-        let app = Router::new().route("/", get(|| async { "Hello, World!" }));
+        let app = Router::new().route(
+            "/",
+            get(|| async {
+                lua.lock()
+                    .await
+                    .load(r#""Hello from LuaJit!""#)
+                    .eval::<String>()
+                    .unwrap()
+            }),
+        );
         // run it with hyper on localhost:3000
         axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
             .serve(app.into_make_service())
             .await
     });
+
+    // Create the display window
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 
